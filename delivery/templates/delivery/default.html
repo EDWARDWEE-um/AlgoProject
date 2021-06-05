@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Interactive maps for Django web apps</title>
+
+
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+
+  <style>
+    .form {
+      margin: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- <h1>Map time!</h1>
+   <div id='map' style='width: 400px; height: 300px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZWR3YXJkd2VlIiwiYSI6ImNrb2ZoMmZudzBpeHEyd3MzanNzcDF0ZmwifQ.RQNKn_iGtdDQGrskHpn0eg';
+        var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11'
+        });
+    </script> -->
+
+  <!-- {{ customer_form }}
+    {{ courier_form }} -->
+  <!-- <form method="POST" enctype="multipart/form-data" >
+        {% csrf_token %}
+        {{ customer_form }}
+        {{ courier_form }}
+        <input type="submit" value="Go!">
+        <input type="hidden" name="product_id" value="{{ customer_form.pk }}">
+    </form> -->
+  <form class="form" method="POST">
+
+    {% csrf_token %}
+
+    {% for field in customer_form %}
+    {{field.label}} :
+    {{field|linebreaks}}
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+    <!-- <input type="hidden" name="product_id" value="{{ customer_form.pk }}"> -->
+  </form>
+</body>
+
+</html>

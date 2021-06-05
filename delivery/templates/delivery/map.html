@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Add a line to a map using a GeoJSON source</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <!-- CSS only -->
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .show-distance {
+            position: absolute;
+            background-color: white;
+            box-shadow: 2px 2px 10px 5px rgba(0, 0, 0, 0.329);
+        }
+
+        #length {
+            padding: 0px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <div class="show-distance">
+        <p > '{{ distance }}' km </p> 
+    </div>
+    <script>
+        var oriLat = '{{oriLat}}'
+        var oriLong = '{{oriLong}}'
+        var destLat = '{{destLat}}'
+        var destLong = '{{destLong}}'
+        var delLat = '{{delLat}}'
+        var delLong = '{{delLong}}'
+        var shortest = '{{shortest}}'
+        // Set options
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZWR3YXJkd2VlIiwiYSI6ImNrb2ZoMmZudzBpeHEyd3MzanNzcDF0ZmwifQ.RQNKn_iGtdDQGrskHpn0eg';
+        // Get data from api
+        var url = 'https://api.mapbox.com/directions/v5/mapbox/driving/' + oriLong + ',' + oriLat + ';' + delLong + ',' + delLat + ';' + destLong + ',' + destLat + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [oriLong, oriLat],
+            zoom: 15
+        });
+
+        var originName = new mapboxgl.Popup()
+            .setText('Origin')
+            .addTo(map);
+
+        var courierName = new mapboxgl.Popup()
+            .setText(shortest)
+            .addTo(map);
+
+        var destinationName = new mapboxgl.Popup()
+            .setText('Destination')
+            .addTo(map);
+
+        var markerOri = new mapboxgl.Marker({
+            color: "#23ff40",
+            draggable: false
+        }).setLngLat([oriLong, oriLat]).addTo(map).setPopup(originName);
+
+
+        var markerDel = new mapboxgl.Marker({
+            color: "#3157ff",
+            draggable: false
+        }).setLngLat([delLong, delLat]).addTo(map).setPopup(courierName);
+
+        var markerDest = new mapboxgl.Marker({
+            color: "#ff3838",
+            draggable: false
+        }).setLngLat([destLong, destLat]).addTo(map).setPopup(destinationName);
+
+        create(url);
+
+        function create(url) {
+            var req = new XMLHttpRequest();
+            req.open('GET', url, true);
+            req.onload = function () {
+                var json = JSON.parse(req.response);
+                var data = json.routes[0];
+                var route = data.geometry.coordinates;
+                var geojson = {
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: route
+                    }
+                };
+                // Map box get distance 
+                var length = turf.length(geojson, { units: 'kilometers' });
+               // document.getElementById('length').innerHTML = `Distance: ${length.toFixed(3)} km`;
+
+                console.log(length)
+                console.log(geojson)
+                // if the route already exists on the map, reset it using setData
+                // otherwise, make a new request
+                map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: {
+                        type: 'geojson',
+                        data: geojson,
+                    },
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': '#3887be',
+                        'line-width': 5,
+                        'line-opacity': 0.75
+                    }
+                });
+
+
+            }
+            // add turn instructions here at the end
+            req.send();
+        };
+
+
+    </script>
+
+</body>
+
+</html>

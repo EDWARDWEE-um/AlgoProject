@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+gmplot = "*"
+geopy = "*"
+mapbox = "*"
+requests = "*"
+djangorestframework = "*"
+coreapi = "*"
+uritemplate = "*"
+pyyaml = "*"
+gunicorn = "*"
+whitenoise = "*"
+psycopg2 = "*"
+django-cors-headers = "*"
+dj-database-url = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
