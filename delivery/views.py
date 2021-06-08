@@ -65,8 +65,12 @@ def default_map(request):
                 distanceMatrix = res.json()
                 distanceCusToHubKm = distanceMatrix["resourceSets"][0]["resources"][0]["results"][0]["travelDistance"]
                 distanceHubToDesKm = distanceMatrix["resourceSets"][0]["resources"][0]["results"][3]["travelDistance"]
+                distanceOriToDesKm = distanceMatrix["resourceSets"][0]["resources"][0]["results"][1]["travelDistance"]
                 totalDist = distanceHubToDesKm + distanceCusToHubKm
                 totalDistance.append(totalDist)
+
+            customerz.oriToDes = distanceOriToDesKm
+            customerz.save()
             # Query current Db to get ID
             # customary = Customer.objects.get(pk=customary_id)
 

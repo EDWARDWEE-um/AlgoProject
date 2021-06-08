@@ -11,7 +11,7 @@ class Customer(models.Model):
     destination = models.CharField(max_length=200)
     destinationLat = models.FloatField(null=True, blank=True, default=None)
     destinationLong = models.FloatField(null=True, blank=True, default=None)
-
+    oriToDes = models.FloatField(null=True, blank=True, default=None)
     # def __str__(self):
     #     return f"{self.name}: {self.origin} to {self.destination}"
 
